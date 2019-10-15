@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import styled from 'styled-components/native';
 import { DEVICE_WIDTH } from './HeaderDetail';
 import colors from '../components/colors';

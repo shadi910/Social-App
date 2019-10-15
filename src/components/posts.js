@@ -95,7 +95,7 @@ export default class Posts extends Component {
             },
             body: JSON.stringify({
                 "f_user_id": item.user_id,
-                }),
+            }),
         })
         .then(response => response.json())
         .then((responseJson) => {
@@ -112,6 +112,7 @@ export default class Posts extends Component {
             console.error(error);
         });
     }
+
 
     _listEmptyComponent = () => {
         const { loading } = this.state;

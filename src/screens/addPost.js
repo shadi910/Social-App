@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { ActivityIndicator, TouchableOpacity, StyleSheet, Text, View, Image, Platform,
-    KeyboardAvoidingView, SafeAreaView, ScrollView, Alert } from 'react-native';
+import { TouchableOpacity, StyleSheet, Text, Image, Platform,
+    KeyboardAvoidingView, SafeAreaView, Alert } from 'react-native';
 import ImagePicker from 'react-native-image-picker';
 import styled from 'styled-components/native';
 import HeaderDetail from '../components/HeaderDetail';
@@ -19,81 +19,35 @@ export default class AddPost extends Component {
     constructor(props){
         super(props);
         this.state = {
-            readyToPost: false,
-            imageId: this.uniqueId(),
             imageSelected: false,
             token: this.props.navigation.getParam('token', ''),
             titleValue: '',
-            titleHasError: false,
             images: []
         }
     }
 
-    s4 = () => {
-        return Math.floor((1 + Math.random()) * 0x10000)
-        .toString(16)
-        .substring(1);
-    }
-
-    uniqueId = () => {
-        return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + 
-        this.s4() + '-' + this.s4() + '-' +this.s4();
-    }
-
     findNewImage = async () => {
         ImagePicker.showImagePicker((response) => {
-            console.log('Response = ', response);
-          
             if (response.didCancel) {
-              console.log('User cancelled image picker');
-              this.setState({ imageSelected: false });
+                this.setState({ imageSelected: false });
             } else if (response.error) {
-              console.log('ImagePicker Error: ', response.error);
-              this.setState({ imageSelected: false });
+                this.setState({ imageSelected: false });
             } else if (response.customButton) {
-              console.log('User tapped custom button: ', response.customButton);
-              this.setState({ imageSelected: false });
+                this.setState({ imageSelected: false });
             } else {
-              this.setState({
-                  imageSelected: true,
-                  imageId: this.uniqueId(),
-                  uri: `data:image/jpeg;base64,${response.data}`
+                this.setState({
+                    imageSelected: true,
+                    uri: `data:image/jpeg;base64,${response.data}`
               })
             }
         });
     }
 
-    changeFormValue = value => {
-        this.setState({ ...value }, () => {
-            if (this.state.titleValue !== '') 
-            {
-                this.setState({ readyToPost: true });
-            } else {
-                this.setState({ readyToPost: false });
-            }
-        });
-    };
-
-    handleRemoveImage = value => {
-        if (this.state.postToEdit) {
-            const images = this.state.images;
-            const newArray = images.filter(el => el.id !== value.id);
-            this.setState({
-            images: newArray,
-            removedImages: [...this.state.removedImages, value],
-            });
-        } else {
-            const images = this.state.images;
-            const newArray = images.filter(el => el !== value);
-            this.setState({ images: newArray });
-        }
-    };
-
     uploadPublish = () => {
-        if (this.state.readyToPost && this.state.imageSelected) {
+        if (this.state.titleValue != '' && this.state.imageSelected) {
             this.uploadImage(this.state.uri);
         } else {
-            alert('Please enter a caption and select an image!');
+            Alert.alert('Please enter a caption and select an image!');
         }
     }
 
@@ -123,7 +77,7 @@ export default class AddPost extends Component {
             }
             else
             {
-                Alert.alert('Error in posting, try again')
+                Alert.alert(responseJson.msg)
             }
         })
         .catch((error) => {
@@ -133,12 +87,8 @@ export default class AddPost extends Component {
 
     handleLeftHeaderButton = () => {
         this.setState({
-            uploading: false,
             imageSelected: false,
-            contentValue: '',
             titleValue: '',
-            readyToPost: false,
-            radius: 1,
             uri: '',
             images: []
         })
@@ -162,30 +112,28 @@ export default class AddPost extends Component {
                         behavior="padding"
                         enabled={Platform.OS === 'ios'}
                     >
-                        <ScrollView>
-                            <SectionCardCentered hasError={this.state.titleHasError}>
-                                <TransparentInput
-                                value={this.state.titleValue}
-                                placeholder="Post Title"
-                                onChangeText={titleValue =>
-                                    this.changeFormValue({ titleValue })
-                                }
-                                placeholderTextColor={colors.mediumNeutral}
-                                />
-                            </SectionCardCentered>
-                            {!this.state.imageSelected ? (
-                            <TouchableOpacity
-                                onPress={() => this.findNewImage()}
-                                style={styles.selctPhotoButtonContainer}>
-                                    <Text style={styles.selctPhotoButtonText}>Select Photo</Text>
-                            </TouchableOpacity>
-                            ):(
-                            <Image 
-                                source={{uri: this.state.uri}}
-                                style={styles.imageContainer}
+                        <SectionCardCentered>
+                            <TransparentInput
+                            value={this.state.titleValue}
+                            placeholder="Post Title"
+                            onChangeText={titleValue =>
+                                this.setState({ titleValue })
+                            }
+                            placeholderTextColor={colors.mediumNeutral}
                             />
-                            )}
-                        </ScrollView>
+                        </SectionCardCentered>
+                        {!this.state.imageSelected ? (
+                        <TouchableOpacity
+                            onPress={() => this.findNewImage()}
+                            style={styles.selctPhotoButtonContainer}>
+                                <Text style={styles.selctPhotoButtonText}>Select Photo</Text>
+                        </TouchableOpacity>
+                        ):(
+                        <Image 
+                            source={{uri: this.state.uri}}
+                            style={styles.imageContainer}
+                        />
+                        )}
                     </KeyboardAvoidingView>
                     <BottomActionButton
                         active={this.state.readyToPost}
@@ -193,18 +141,6 @@ export default class AddPost extends Component {
                         onPress={() => this.uploadPublish()}
                     />
                 </StyledContainer>
-                { this.state.uploading ? (
-                    <View style={styles.uploadContainer}>
-                        <Text>{this.state.progress}%</Text>
-                        { this.state.progress != 100 ? (
-                            <ActivityIndicator size="small" color="blue" />
-                        ) : (
-                            <Text>Processing</Text>
-                        )}
-                    </View>
-                ) : (
-                    <View></View>
-                )}
             </SafeAreaView>
         )
     }

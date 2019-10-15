@@ -1,7 +1,7 @@
 import React from 'react';
 import { ActivityIndicator, StatusBar, StyleSheet, View } from 'react-native';
 import { connect } from 'react-redux';
-import { getUserToken } from '../routes/actions';
+import { getUserData } from '../redux/actions';
 
 class Loading extends React.Component {
     static navigationOptions = {
@@ -15,28 +15,22 @@ class Loading extends React.Component {
         this._bootstrapAsync();
     }
 
-    // Fetch the token from storage then navigate to our appropriate place
     _bootstrapAsync = () => {
 
-        this.props.getUserToken()
+        this.props.getUserData()
         .then(() => {
-            console.log('my token is ' + this.props.token)
             if (this.props.token !== null)
             {
-                this.props.navigation.navigate('DashBoard', { token: this.props.token });
+                this.props.navigation.navigate('DashBoard', { token: this.props.token, userId: this.props.userId });
             }
             else
             {
                 this.props.navigation.navigate('SignIn');
             }
         })
-            .catch(error => {
-                this.setState({ error })
-            })
 
     };
 
-    // Render any loading content that you like here
     render() {
         return (
             <View style={styles.container}>
@@ -56,12 +50,13 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    token: state.token.token,
+    token: state.data.token,
+    userId: state.data.userId
 });
 
 
 const mapDispatchToProps = dispatch => ({
-    getUserToken: () => dispatch(getUserToken()),
+    getUserData: () => dispatch(getUserData()),
 });
 
 export default connect(mapStateToProps, mapDispatchToProps)(Loading);

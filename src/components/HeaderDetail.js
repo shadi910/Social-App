@@ -1,8 +1,7 @@
 import React from 'react';
-import { StyleSheet, View, Text, Dimensions } from 'react-native';
+import { Text, Dimensions } from 'react-native';
 import styled from 'styled-components/native';
 import colors from './colors';
-import Avatar from './Avatar';
 
 export const DEVICE_WIDTH = Dimensions.get('window').width;
 
@@ -52,13 +51,6 @@ export const StyledLeftButton = styled.TouchableOpacity`
   margin-top: 10;
 `;
 
-const StyledRightButton = styled.TouchableOpacity`
-  margin-right: 16;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-`;
-
 export const StyledIcon = styled.Image``;
 
 export default (HeaderDetail = props => {
@@ -67,13 +59,7 @@ export default (HeaderDetail = props => {
     leftHeaderButtonAction,
     leftHeaderButtonTitle,
     rightHeaderIcon,
-    rightHeaderButtonAction,
-    rightHeaderButtonTitle,
-    headerTitle,
-    hasRightSingleAvatar,
-    user,
-    hasRightGroupAvatar,
-    group,
+    headerTitle
   } = props;
   const hasLeftIcon = leftHeaderIcon !== undefined && leftHeaderIcon !== '';
 
@@ -90,36 +76,6 @@ export default (HeaderDetail = props => {
         </StyledLeftButton>
         <StyledRowView>
           <StyledHeaderTitle>{headerTitle}</StyledHeaderTitle>
-          <StyledRightButton onPress={rightHeaderButtonAction}>
-            {hasRightIcon && <StyledIcon source={rightHeaderIcon} />}
-            {rightHeaderButtonTitle !== '' && (
-              <StyledButtonText>{rightHeaderButtonTitle}</StyledButtonText>
-            )}
-            {hasRightSingleAvatar && (
-              <Avatar
-                source={user.avatar_url}
-                size={32}
-                onSelectUser={() =>
-                  props.navigation.navigate('Profile', {
-                    user,
-                  })
-                }
-                firstName={user.first_name}
-                lastName={user.last_name}
-              />
-            )}
-            {hasRightGroupAvatar && (
-              <Avatar
-                source={ group.logo_url}
-                size={46}
-                onSelectUser={() =>
-                  console.log('on select user from paging view')
-                }
-                firstName={group.name}
-                lastName=""
-              />
-            )}
-          </StyledRightButton>
         </StyledRowView>
       </StyledHeader>
       <StyledBottomLine />

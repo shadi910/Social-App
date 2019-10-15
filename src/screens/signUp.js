@@ -156,12 +156,3 @@ const styles = StyleSheet.create({
         color: "#696969"
     }
 });
-
-const pickerSelectStyles = StyleSheet.create({
-    inputIOS: {
-      fontSize: 16,
-      padding: 12,
-      color: 'black',
-      paddingRight: 30
-    }
-});

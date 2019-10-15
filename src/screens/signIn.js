@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { connect } from 'react-redux';
-import { saveUserToken } from '../routes/actions';
+import { saveUserData } from '../redux/actions';
 
 class SignIn extends Component {
     state = { email: '', password: '', token: this.props.token, userId: '' };
@@ -29,8 +29,9 @@ class SignIn extends Component {
                         email: '',
                         password: ''
                     });
-                    this.props.saveUserToken(this.state.token)
-                    this.props.navigation.navigate('DashBoard', {token: this.state.token, userId: this.state.userId})
+                    this.props.saveUserData({token: responseJson.data.token,
+                        userId: responseJson.data.user_id});
+                    this.props.navigation.navigate('DashBoard', {token: this.state.token, userId: this.state.userId});
                 }
                 else
                 {
@@ -153,13 +154,14 @@ const styles = StyleSheet.create({
 });
 
 const mapStateToProps = state => ({
-    token: state.token,
+    token: state.data.token,
+    userId: state.data.userId
 });
 
 const mapDispatchToProps = dispatch => {
     return {
-        saveUserToken: (token) => {
-        dispatch(saveUserToken(token))
+        saveUserData: (state) => {
+        dispatch(saveUserData(state))
       }
     }
   }
