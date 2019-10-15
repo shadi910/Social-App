@@ -1,8 +1,10 @@
 import React from 'react';
 import { TouchableOpacity, Text, Alert, View, StyleSheet } from 'react-native';
+import { connect } from 'react-redux';
+import { removeUserToken } from '../routes/actions';
 import Posts from '../components/posts';
 
-export default class DashBoard extends React.Component {
+class DashBoard extends React.Component {
     constructor(props){
         super(props);
         this.state = { 
@@ -12,7 +14,13 @@ export default class DashBoard extends React.Component {
     }
 
     logoutUser = () => {
-        // auth.signOut().then(this.props.navigation.navigate('SignIn'));
+        this.props.removeUserToken()
+        .then(() => {
+            this.props.navigation.navigate('SignIn');
+        })
+        .catch(error => {
+            this.setState({ error })
+        })
     }
 
     render()
@@ -121,3 +129,13 @@ const styles = StyleSheet.create({
         borderColor: "grey"
     }
 });
+
+const mapStateToProps = state => ({
+    token: state.token,
+});
+
+const mapDispatchToProps = dispatch => ({
+    removeUserToken: () => dispatch(removeUserToken()),
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(DashBoard);

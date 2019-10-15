@@ -1,24 +1,27 @@
+console.disableYellowBox = true;
 import React, { Component } from 'react';
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
+import { Provider } from 'react-redux';
+import store from './store';
 import DashBoard from './src/screens/dashBoard';
 import AddPost from './src/screens/addPost';
 import SignUp from './src/screens/signUp';
 import SignIn from './src/screens/signIn';
 import Follow from './src/screens/follow';
-// import Loading from './src/screens/loading';
+import Loading from './src/screens/loading';
 
 const RootStack = createStackNavigator(
   {
-    Signin: { screen: SignIn },
+    Loading: { screen: Loading },
+    SignIn: { screen: SignIn },
     SignUp: { screen: SignUp },
-    // Loading: { screen: Loading },
     DashBoard: { screen: DashBoard },
     AddPost: { screen: AddPost },
     Follow: { screen: Follow },
   },
   {
-    initialRouteParams: 'Signin',
+    initialRouteParams: 'Loading',
     mode: 'modal',
     headerMode: 'none'
   }
@@ -34,7 +37,9 @@ export default class App extends Component {
 
   render() {
     return (
-      <MainStack />
+      <Provider store={store}>
+        <MainStack />
+      </Provider>
     );
   }
 }

@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { connect } from 'react-redux';
+import { saveUserToken } from '../routes/actions';
 
-export default class SignIn extends Component {
-    state = { email: '', password: '', token: '', userId: '' };
+class SignIn extends Component {
+    state = { email: '', password: '', token: this.props.token, userId: '' };
     handleLogin = () => {
         const { email, password } = this.state
         if (email != '' && password != '') {
@@ -23,9 +25,12 @@ export default class SignIn extends Component {
                 {
                     this.setState({
                         token: responseJson.data.token,
-                        userId: responseJson.data.userId
+                        userId: responseJson.data.userId,
+                        email: '',
+                        password: ''
                     });
-                    this.props.navigation.navigate('DashBoard', {token: this.state.token, userId: this.state.userId});
+                    this.props.saveUserToken(this.state.token)
+                    this.props.navigation.navigate('DashBoard', {token: this.state.token, userId: this.state.userId})
                 }
                 else
                 {
@@ -146,3 +151,17 @@ const styles = StyleSheet.create({
         color: "#696969"
     }
 });
+
+const mapStateToProps = state => ({
+    token: state.token,
+});
+
+const mapDispatchToProps = dispatch => {
+    return {
+        saveUserToken: (token) => {
+        dispatch(saveUserToken(token))
+      }
+    }
+  }
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignIn);
