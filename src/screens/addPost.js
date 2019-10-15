@@ -136,7 +136,7 @@ export default class AddPost extends Component {
                         )}
                     </KeyboardAvoidingView>
                     <BottomActionButton
-                        active={this.state.readyToPost}
+                        active={true}
                         title="Post it!"
                         onPress={() => this.uploadPublish()}
                     />
